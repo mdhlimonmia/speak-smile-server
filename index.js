@@ -42,12 +42,12 @@ async function run() {
       res.send(result);
     });
 
-    // //get all instructor
-    // app.get("/instructors", async (req, res) => {
-    //   const instructors = instructorsCollection.find();
-    //   const result = await instructors.toArray();
-    //   res.send(result);
-    // });
+    //get all instructor
+    app.get("/instructors", async (req, res) => {
+      const instructors = instructorsCollection.find();
+      const result = await instructors.toArray();
+      res.send(result);
+    });
     
     //Post new course
     app.post("/courses", async(req, res) => {
