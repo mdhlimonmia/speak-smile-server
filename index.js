@@ -35,17 +35,19 @@ async function run() {
     const instructorsCollection = client.db("spSmileDB").collection("instructors");
     const usersCollection = client.db("spSmileDB").collection("users");
   
-
+    //get all courses
     app.get("/courses", async (req, res) => {
       const courses = coursesCollection.find();
       const result = await courses.toArray();
       res.send(result);
     });
-    app.get("/instructors", async (req, res) => {
-      const instructors = instructorsCollection.find();
-      const result = await instructors.toArray();
-      res.send(result);
-    });
+
+    // //get all instructor
+    // app.get("/instructors", async (req, res) => {
+    //   const instructors = instructorsCollection.find();
+    //   const result = await instructors.toArray();
+    //   res.send(result);
+    // });
     
     //Post new course
     app.post("/courses", async(req, res) => {
@@ -55,19 +57,19 @@ async function run() {
       res.send(result);
     })
 
-     //users
-     app.post('/users', async (req, res) => {
-      const user = req.body;
-      const query = { email: user.email }
-      const existingUser = await usersCollection.findOne(query);
+    //  //users
+    //  app.post('/users', async (req, res) => {
+    //   const user = req.body;
+    //   const query = { email: user.email }
+    //   const existingUser = await usersCollection.findOne(query);
 
-      if (existingUser) {
-        return res.send({ message: 'user already exists' })
-      }
+    //   if (existingUser) {
+    //     return res.send({ message: 'user already exists' })
+    //   }
 
-      const result = await usersCollection.insertOne(user);
-      res.send(result);
-    });
+    //   const result = await usersCollection.insertOne(user);
+    //   res.send(result);
+    // });
    
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
