@@ -112,7 +112,31 @@ async function run() {
         currency: 'usd',
         payment_method_types: ['card']
       });
+      
+      res.send({
+        clientSecret: paymentIntent.client_secret
+      })
+    })
     
+    
+    // payment related api
+    app.post('/payments', verifyJWT, async (req, res) => {
+      const payment = req.body;
+      const insertResult = await paymentCollection.insertOne(payment);
+
+      const query = { _id: { $in: payment.cartItems.map(id => new ObjectId(id)) } }
+      const deleteResult = await cartCollection.deleteMany(query)
+
+      res.send({ insertResult, deleteResult });
+    })
+
+    //get all user
+    app.get("/users", async (req, res) => {
+      const users = usersCollection.find();
+      const result = await users.toArray();
+      res.send(result);
+    });
+
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
