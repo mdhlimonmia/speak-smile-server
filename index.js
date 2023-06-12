@@ -36,6 +36,7 @@ async function run() {
       .db("spSmileDB")
       .collection("instructors");
     const usersCollection = client.db("spSmileDB").collection("users");
+    const paymentCollection = client.db("spSmileDB").collection("payhistory");
 
     //get all courses
     app.get("/courses", async (req, res) => {
@@ -130,13 +131,20 @@ async function run() {
       res.send({ insertResult, deleteResult });
     })
 
-    //get all user
-    app.get("/users", async (req, res) => {
-      const users = usersCollection.find();
-      const result = await users.toArray();
+    //get Payment History
+    app.get("/payhistory", async (req, res) => {
+      const pay = paymentCollection.find();
+      const result = await pay.toArray();
       res.send(result);
     });
 
+    //Post new course
+    app.post("/payhistoy", async (req, res) => {
+      const payment = req.body;
+      // console.log(course);
+      const result = await paymentCollection.insertOne(payment);
+      res.send(result);
+    });
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
