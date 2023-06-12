@@ -79,6 +79,7 @@ async function run() {
       res.send(result);
     });
    
+    //update user status 
     app.patch("/users/:id", async (req, res) => {
       const id = req.params.id;
       const query = {_id : new ObjectId(id)}
@@ -86,6 +87,17 @@ async function run() {
       const updateUser = {$set: data };
       // console.log(query, data);
       const result = await usersCollection.updateOne(query, updateUser)
+      res.send(result);
+    });
+
+    //update courses status 
+    app.patch("/courses/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = {_id : new ObjectId(id)}
+      const data= req.body
+      const updateCourses = {$set: data };
+      // console.log(query, data);
+      const result = await coursesCollection.updateOne(query, updateCourses)
       res.send(result);
     });
 
