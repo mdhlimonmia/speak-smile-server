@@ -48,28 +48,36 @@ async function run() {
       const result = await instructors.toArray();
       res.send(result);
     });
+
+    //get all user
+    app.get("/users", async (req, res) => {
+      const users = usersCollection.find();
+      const result = await users.toArray();
+      res.send(result);
+    });
     
     //Post new course
     app.post("/courses", async(req, res) => {
       const course = req.body;
-      console.log(course);
+      // console.log(course);
       const result = await coursesCollection.insertOne(course);
       res.send(result);
     })
 
-    //  //users
-    //  app.post('/users', async (req, res) => {
-    //   const user = req.body;
-    //   const query = { email: user.email }
-    //   const existingUser = await usersCollection.findOne(query);
+     //users
+     app.post('/users', async (req, res) => {
+      const user = req.body;
+      // console.log(user);
+      const query = { email: user.email }
+      const existingUser = await usersCollection.findOne(query);
 
-    //   if (existingUser) {
-    //     return res.send({ message: 'user already exists' })
-    //   }
+      if (existingUser) {
+        return res.send({ message: 'user already exists' })
+      }
 
-    //   const result = await usersCollection.insertOne(user);
-    //   res.send(result);
-    // });
+      const result = await usersCollection.insertOne(user);
+      res.send(result);
+    });
    
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
