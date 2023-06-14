@@ -49,7 +49,6 @@ async function run() {
     //get single course
     app.get("/course/:id", async (req, res) => {
       const id = req.params.id;
-      console.log(id);
       const query = { _id: new ObjectId(id) };
       const result = await coursesCollection.findOne(query);
       res.send(result);
@@ -116,9 +115,11 @@ async function run() {
 
      // create payment intent
      app.post('/create-payment-intent', async (req, res) => {
-      const { price } = req.body;
+      const  price  = req.body.price;
+      // console.log('price',price);
       const amount = parseInt(price * 100);
-      const paymentIntent = await stripe.paymentIntents.create({
+      // console.log('amount', amount);
+      const paymentIntent = await strict.paymentIntents.create({
         amount: amount,
         currency: 'usd',
         payment_method_types: ['card']
