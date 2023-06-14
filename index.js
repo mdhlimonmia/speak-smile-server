@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
+const strict = require('stripe')(process.env.PAYMENT_SECRET_KEY)
 const app = express();
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const port = process.env.PORT || 5000;
@@ -42,6 +43,15 @@ async function run() {
     app.get("/courses", async (req, res) => {
       const courses = coursesCollection.find();
       const result = await courses.toArray();
+      res.send(result);
+    });
+
+    //get single course
+    app.get("/course/:id", async (req, res) => {
+      const id = req.params.id;
+      console.log(id);
+      const query = { _id: new ObjectId(id) };
+      const result = await coursesCollection.findOne(query);
       res.send(result);
     });
 
@@ -121,7 +131,7 @@ async function run() {
     
     
     // payment related api
-    app.post('/payments', verifyJWT, async (req, res) => {
+    app.post('/payments', async (req, res) => {
       const payment = req.body;
       const insertResult = await paymentCollection.insertOne(payment);
 
