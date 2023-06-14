@@ -37,7 +37,8 @@ async function run() {
       .db("spSmileDB")
       .collection("instructors");
     const usersCollection = client.db("spSmileDB").collection("users");
-    const paymentCollection = client.db("spSmileDB").collection("payhistory");
+    const paymentCollection = client.db("spSmileDB").collection("payment");
+    const selectedCollection = client.db("spSmileDB").collection("selected");
 
     //get all courses
     app.get("/courses", async (req, res) => {
@@ -76,6 +77,27 @@ async function run() {
       res.send(result);
     });
 
+    //Save selected course
+    app.post("/selected", async (req, res) => {
+      const course = req.body;
+      const result = await selectedCollection.insertOne(course);
+      res.send(result);
+    });
+
+    // app.get("/course/:id", async (req, res) => {
+    //   const id = req.params.id;
+    //   const query = { _id: new ObjectId(id) };
+    //   const result = await coursesCollection.findOne(query);
+    //   res.send(result);
+    // });
+
+    //get selected courses
+    app.get("/selected", async (req, res) => {
+      const selected = selectedCollection.find();
+      const result = await selected.toArray();
+      res.send(result);
+    });
+
     //users
     app.post("/users", async (req, res) => {
       const user = req.body;
@@ -108,7 +130,7 @@ async function run() {
       const query = { _id: new ObjectId(id) };
       const data = req.body;
       const updateCourses = { $set: data };
-      // console.log(query, data);
+      console.log(query, data);
       const result = await coursesCollection.updateOne(query, updateCourses);
       res.send(result);
     });
@@ -131,29 +153,17 @@ async function run() {
     })
     
     
-    // payment related api
+    //save payment History 
     app.post('/payments', async (req, res) => {
       const payment = req.body;
       const insertResult = await paymentCollection.insertOne(payment);
-
-      const query = { _id: { $in: payment.cartItems.map(id => new ObjectId(id)) } }
-      const deleteResult = await cartCollection.deleteMany(query)
-
-      res.send({ insertResult, deleteResult });
+      res.send(insertResult);
     })
 
     //get Payment History
-    app.get("/payhistory", async (req, res) => {
+    app.get("/payments", async (req, res) => {
       const pay = paymentCollection.find();
       const result = await pay.toArray();
-      res.send(result);
-    });
-
-    //Post new course
-    app.post("/payhistoy", async (req, res) => {
-      const payment = req.body;
-      // console.log(course);
-      const result = await paymentCollection.insertOne(payment);
       res.send(result);
     });
 
